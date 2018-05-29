@@ -1,0 +1,117 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "source-vnetSettings": {
+            "type": "object"
+            },
+        "addvmSettings": {
+            "type": "object"
+            }
+        },
+"variables": {
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('source-vnetSettings').virtualNetworkName)]",
+        "subnet1Ref": "[concat(variables('vnetId'), '/subnets/', parameters('source-vnetSettings').subnet1Name)]"
+    },
+    "resources": [
+        {
+          "name": "[parameters('addvmSettings').StorageAccountName]",
+          "type": "Microsoft.Storage/storageAccounts",
+          "location": "[parameters('source-vnetSettings').location]",
+          "apiVersion": "2016-01-01",
+          "sku": {
+            "name": "[parameters('addvmSettings').StorageAccountType]"
+          }
+         },
+         { 
+            "name": "[parameters('addvmSettings').publicIpName]",
+            "type": "Microsoft.Network/publicIpAddresses",
+            "apiVersion": "2016-03-30",
+            "location": "[parameters('source-vnetSettings').location]",
+            "properties": {
+                "publicIpAllocationMethod": "[parameters('addvmSettings').publicIpAddressType]"
+            }
+             },
+     {
+            "name": "[parameters('addvmSettings').nicName]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2016-03-30",
+            "location": "[parameters('source-vnetSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIpAddresses/', parameters('addvmSettings').publicIpName)]",
+                "[concat('Microsoft.Network/virtualNetworks/',parameters('source-vnetSettings').virtualNetworkName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnet1Ref')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('addvmSettings').publicIpName)]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+         {
+            "name": "[parameters('addvmSettings').vmName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2015-06-15",
+            "location": "[parameters('source-vnetSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('addvmSettings').nicName)]",
+                "[concat('Microsoft.Network/storageAccounts/', parameters('addvmSettings').StorageAccountName)]"    
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName":"[parameters('addvmSettings').vmName]",
+                    "adminUsername": "[parameters('addvmSettings').adminUsername]",
+                    "adminPassword": "[parameters('addvmSettings').adminPassword]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('addvmSettings').vmSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('addvmSettings').publisher]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "offer": "[parameters('addvmSettings').offer]",
+                        "sku": "[parameters('addvmSettings').sku]",
+                        "version": "[parameters('addvmSettings').version]"
+                    },
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('addvmSettings').storageAccountType]"
+                        },
+                        "vhd": "[parameters('addvmSettings').vhd]"
+                    },
+                    "dataDisks": [
+                        {
+                            "diskSizeGB": 1023,
+                            "lun": 0,
+                            "createOption": "Empty"
+                        }
+                    ],
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('addvmSettings').nicName)]"
+                        }
+                    ],
+                    "diagnosticsProfile": {
+                        "bootDiagnostics": {
+                            "enabled": true,
+                            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('addvmSettings').StorageAccountName)).primaryEndpoints.blob]"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
