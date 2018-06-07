@@ -2,6 +2,9 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "sourceSettings": {
+            "type": "object" 
+        },
         "source-vnetSettings": {
             "type": "object"
         },
@@ -214,7 +217,7 @@
                     "fileUris": [
                         "[parameters('targetSettings').customScriptsUrl]"
                     ],
-                    "commandToExecute": "[concat('sh test.sh',' ','storageAccountName1',' ','storageAccountName2',' ','Resourcegroup1',' ','Resourcegroup2')]"
+                    "commandToExecute": "[concat('sh test.sh',' ',parameters('sourceSettings').storageAccountName,' ',parameters('targetSettings').storageAccountName,' ','Resourcegroup1')]"
                   }
             }
         }
