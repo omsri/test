@@ -4,9 +4,6 @@
     "parameters": {
         "targetSettings": {
             "type": "object"
-        },
-        "target-vnetSettings": {
-            "type": "object"
         }
     },
     "variables": {},
@@ -15,7 +12,7 @@
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('targetSettings').vmName,'/',parameters('targetSettings').vmExtensionName)]",
             "apiVersion": "2017-03-30",
-            "location": "[parameters('target-vnetSettings').location]",
+            "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines/', parameters('targetSettings').vmName)]"
             ],
