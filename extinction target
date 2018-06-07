@@ -214,7 +214,7 @@
                     "fileUris": [
                         "[parameters('targetSettings').customScriptsUrl]"
                     ],
-                    "commandToExecute": "sh test.sh storageAccountName1 storageAccountName2 Resourcegroup1 Resourcegroup2"
+                    "commandToExecute": "[concat('sh test.sh',' ','storageAccountName1',' ','storageAccountName2',' ','Resourcegroup1',' ','Resourcegroup2')]"
                   }
             }
         }
