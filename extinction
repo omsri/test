@@ -1,0 +1,36 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "targetSettings": {
+            "type": "object"
+        },
+        "target-vnetSettings": {
+            "type": "object"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('targetSettings').vmName,'/',parameters('targetSettings').vmExtensionName)]",
+            "apiVersion": "2017-03-30",
+            "location": "[parameters('target-vnetSettings').location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/', parameters('targetSettings').vmName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('targetSettings').customScriptsUrl]"
+                    ],
+                    "commandToExecute": "sh test.sh"
+                  }
+            }
+        }
+    ]
+}
