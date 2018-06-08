@@ -217,7 +217,7 @@
                     "fileUris": [
                         "[parameters('targetSettings').powerBIScriptUrl]"
                     ],
-                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File powerBiInstall1.ps1',' ',parameters('sourceSettings').powerBITemplatesUrl,' ',parameters('targetSettings').powerBIDesktopUrl)]"
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File powerBiInstall1.ps1',' ',parameters('sourceSettings').storageAccountName,' ',parameters('targetSettings').storageAccountName)]"
                   }
             }
         }
