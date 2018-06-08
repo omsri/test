@@ -209,9 +209,9 @@
                 "[resourceId('Microsoft.Compute/virtualMachines/', parameters('targetSettings').vmName)]"
             ],
             "properties": {
-                "publisher": "Microsoft.Compute.Extensions",
-                "type": "CustomScript",
-                "typeHandlerVersion": "2.0",
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.9",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
