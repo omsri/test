@@ -2,6 +2,9 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "sourceSettings": {
+            "type": "object" 
+        },
         "source-vnetSettings": {
             "type": "object"
         },
@@ -195,6 +198,27 @@
                         }
                     ]
                 }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('targetSettings').vmName,'/',parameters('targetSettings').vmExtensionName)]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('targetSettings').vmName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('targetSettings').powerBIScriptUrl]"
+                    ],
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File powerBiInstall1.ps1',' ',parameters('sourceSettings').powerBITemplatesUrl,' ',parameters('targetSettings').powerBIDesktopUrl)]"
+                  }
             }
         }
     ],
