@@ -206,18 +206,18 @@
             "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/', parameters('targetSettings').vmName)]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('targetSettings').vmName)]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
                 "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.9",
+                "typeHandlerVersion": "1.8",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('targetSettings').customScriptsUrl]"
+                        "[parameters('targetSettings').powerBIScriptUrl]"
                     ],
-                    "commandToExecute": "[concat('sh test.sh',' ',parameters('sourceSettings').storageAccountName,' ',parameters('targetSettings').storageAccountName,' ','Resourcegroup1')]"
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File powerBiInstall1.ps1',' ',parameters('sourceSettings').powerBITemplatesUrl,' ',parameters('targetSettings').powerBIDesktopUrl)]"
                   }
             }
         }
