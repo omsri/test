@@ -210,7 +210,7 @@
             ],
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
-                "type": "CustomScript",
+                "type": "CustomScriptExtension",
                 "typeHandlerVersion": "2.0",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
